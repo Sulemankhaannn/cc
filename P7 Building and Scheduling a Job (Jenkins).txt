@@ -1,0 +1,136 @@
+START
+  ↓
+Open Jenkins Website
+Open Google Chrome browser
+In the address bar type:
+http://localhost:8080
+Press Enter
+Login using Jenkins username and password
+Jenkins Dashboard will open
+  ↓
+Create New Jenkins Job
+On Jenkins Dashboard
+Click "New Item"
+In Item Name type:
+website
+Select:
+Freestyle Project
+Click OK
+  ↓
+Configure Jenkins Job
+Configuration page opens
+In General section write description
+Example:
+Job for testing whether websites are reachable
+  ↓
+Add Build Step for Website Testing
+Scroll down to Build Section
+Click "Add Build Step"
+Select:
+Execute Windows Batch Command
+  ↓
+Write Website Testing Script
+In the command box type the following script
+
+@echo off
+echo Checking website health...
+
+curl -Is https://google.com >NUL || exit /b 1
+curl -Is https://github.com >NUL || exit /b 1
+curl -Is https://jaihindcollege.com >NUL || exit /b 1
+  ↓
+Save Jenkins Job
+Scroll down and click Save
+Jenkins job is created successfully
+  ↓
+Run Job Manually
+On job dashboard click:
+Build Now
+Jenkins will start executing the job
+  ↓
+Check Build Output
+Click on build number
+Example:
+Build #1
+Click Console Output
+If websites are reachable → Build SUCCESS
+If website fails → Build FAILURE
+  ↓
+Test Failure Case
+Open job configuration again
+Change one website link
+Example:
+https://wrongwebsite.com
+Save the job
+Click Build Now
+Now Jenkins will show FAILURE output
+  ↓
+Schedule Job Automatically
+Click Configure
+Scroll to Build Triggers
+Enable:
+Build periodically
+  ↓
+Set Time Schedule
+Enter time values
+
+Minutes : 08
+Hours : 11
+Day of Month : *
+Month : *
+Day of Week : 0-7
+
+This means Jenkins will automatically run the job
+at the scheduled time every day
+  ↓
+Save Job Configuration
+Click Save
+Jenkins will now execute the job automatically
+according to the schedule
+  ↓
+Create Folder for Python Script
+Open File Explorer
+Go to D Drive
+Right Click → New Folder
+Name the folder:
+python_test
+  ↓
+Create Python File
+Open the folder
+Right Click → New → Text Document
+Rename file:
+test.py
+Open file in Notepad
+  ↓
+Write Python Code
+Type the following code
+
+print("Hello Jenkins")
+print("Python script executed successfully")
+
+Save the file and close Notepad
+  ↓
+Configure Jenkins to Run Python Script
+Open Jenkins job
+Click Configure
+Scroll to Build Steps
+Click Add Build Step
+Select:
+Execute Windows Batch Command
+  ↓
+Write Python Command
+In command box type
+
+python --version
+python test.py
+  ↓
+Save and Run Job
+Click Save
+Click Build Now
+Jenkins will run the Python script
+  ↓
+Check Python Output
+Open Build Console Output
+You will see message printed from Python file
+  ↓
+END

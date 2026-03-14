@@ -1,0 +1,150 @@
+START
+  ↓
+Open Docker Desktop
+Wait until Docker shows "Docker is running"
+  ↓
+Search Python Image
+In Docker search bar type: python
+Select python image
+Click Run
+  ↓
+Open Terminal
+Go to container terminal
+Type command
+
+docker run -it python
+
+Python container starts
+  ↓
+Check Python Version
+Inside terminal type
+
+python
+
+Python interpreter starts
+Type-print("hello world")
+
+Output appears
+Type-exit
+
+This exits python terminal
+  ↓
+Create Folder for Python Script
+Open Desktop
+Create a new folder
+Name it
+
+app
+  ↓
+Create Python File
+Inside app folder
+Create file
+
+test.py
+
+Write simple python code inside test.py
+Save the file
+  ↓
+Run Python File Using Docker
+Open terminal
+Type command
+
+docker run -it --rm -v C:\Users\user-18\Desktop:/app python bash
+
+Container opens
+  ↓
+Check Files
+Type
+
+ls
+
+Move to folder
+
+cd app
+  ↓
+Run Python File
+Type
+
+python3 test.py
+
+Output of test.py will appear
+  ↓
+Create New Project Folder
+Create a new folder
+
+my_python_app
+  ↓
+Create Requirements File
+Inside folder create file
+
+requirements.txt
+
+Write inside it
+
+flask
+
+Save file
+  ↓
+Create Dockerfile
+Create file named
+
+Dockerfile
+
+(no extension)
+
+Write code inside
+
+FROM python:3.14
+
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+CMD ["python", "app.py"]
+  ↓
+Create Python Application File
+Create file
+
+app.py
+
+Write basic python code inside it
+Save file
+  ↓
+Build Docker Image
+Open terminal in this folder
+Type command
+
+docker build -t my_python_app .
+  ↓
+Run Docker Image
+Type command
+
+docker run my_python_app
+
+Python application output appears
+  ↓
+Tag Docker Image
+Type command
+
+docker tag my_python_app sanubi123(docker username)/my_python_app:latest
+  ↓
+Push Image to Docker Hub
+Type command
+
+docker push sanubi123(docker username)/my_python_app:latest
+  ↓
+Pull Image on Another PC
+On another computer type
+
+docker pull sanubi123(docker username)/my_python_app:latest
+  ↓
+Run Image on Another PC
+Type command
+
+docker run sanubi123(docker username)/my_python_app:latest
+
+Output will appear
+  ↓
+END

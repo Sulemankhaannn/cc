@@ -1,0 +1,71 @@
+PRACTICAL 1 – Create a Virtual Machine on AWS (Windows & Linux)
+Aim
+To create a Virtual Machine and set up a basic server on AWS using both Windows and Linux operating systems.
+
+PART 1 – Windows EC2 Instance
+Step 1 – Open EC2
+AWS Management Console → Search bar → type: EC2 → Select EC2
+
+Step 2 – Go to Instances
+EC2 Dashboard → Click: Instances (left sidebar)
+
+Step 3 – Launch Instance
+Click: Launch Instance
+
+Step 4 – Enter Instance Details
+Instance name: ExamServer
+Quick Start OS: Windows
+
+Step 5 – Create Key Pair
+Click: Create new key pair
+
+Name: Exam123
+Key pair type: RSA
+Private key file format: .pem
+
+Click: Create key pair
+(Key pair file downloads automatically — save it)
+
+Step 6 – Launch the Instance
+Click: Launch Instance
+Refresh the page or go back to Instances section
+
+Step 7 – Connect to the Instance
+Select your instance → Click: Connect
+Go to tab: RDP Client
+Click: Download Remote Desktop File
+
+Step 8 – Get the Password
+Click: Get Password
+Upload your Exam123.pem file
+Click: Decrypt Password
+Copy the generated password and save it
+
+Step 9 – Access the Remote Desktop
+1. Open the downloaded Remote Desktop (.rdp) file from Downloads
+2. Click: Connect
+3. Enter the decrypted password
+4. Click: OK
+5. Click: Yes (to confirm the connection)
+
+Output: Windows Virtual Machine is now running and accessible via Remote Desktop.
+
+
+PART 2 – Red Hat / Linux EC2 Instance
+Step 10 – Create Red Hat Instance
+EC2 → Instances → Launch Instance
+
+Instance name: ExamServer (or any name)
+Quick Start OS: Red Hat   ← only change this
+All other settings remain the same as Windows:
+Key pair: Exam123 (RSA / .pem)
+Storage: default (up to 30 GB free)
+Click: Launch Instance
+
+Output: Red Hat EC2 instance launched successfully.
+
+
+Note
+For any other OS (Amazon Linux, Ubuntu, SUSE etc.):
+→ Only change the OS selection during instance creation
+→ All other configuration steps remain the same

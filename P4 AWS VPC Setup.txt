@@ -1,0 +1,244 @@
+PRACTICAL 4 – AWS VPC Setup
+
+STEP 1: Create a VPC
+Go to: VPC > Your VPCs > Create VPC
+
+Resources to create: VPC only
+Name tag: my-vpc-prac
+IPv4 CIDR block: 10.0.0.0/16 (manual input)
+IPv6 CIDR block: No IPv6 CIDR block
+Tenancy: Default
+VPC encryption control: None
+Tag – Key: Name | Value: my-vpc-prac
+
+Click Create VPC
+
+Success: "You successfully created vpc-03bab4c2f21f169b4 / my-vpc-prac"
+
+
+STEP 2: Delete Existing Subnets (Except Defaults)
+Go to: VPC > Subnets
+Select and delete the following subnets:
+
+first-subnet-private1-a (subnet-0b7da29e89f...)
+first-subnet-private2-a (subnet-090516630ef...)
+first-subnet-public1-ap (subnet-03f45a56580...)
+first-subnet-public2-ap (subnet-0f4cd7db58b...)
+
+Type delete in the confirmation box and click Delete
+
+STEP 3: Create Public Subnet
+Go to: VPC > Subnets > Create subnet
+
+VPC ID: vpc-03bab4c2f21f169b4 (my-vpc-prac)
+Subnet name: my-subnet-public-1
+Availability Zone: Asia Pacific (Mumbai) / ap-south-1a
+IPv4 VPC CIDR block: 10.0.0.0/16
+IPv4 subnet CIDR block: 10.0.0.0/24 (256 IPs)
+Tag – Key: Name | Value: my-subnet-public-1
+
+Click Create subnet
+
+STEP 4: Create Private Subnet
+Go to: VPC > Subnets > Create subnet
+
+VPC ID: vpc-03bab4c2f21f169b4 (my-vpc-prac)
+Subnet name: my-subnet-private-1
+Availability Zone: Asia Pacific (Mumbai) / ap-south-1a
+IPv4 VPC CIDR block: 10.0.0.0/16
+IPv4 subnet CIDR block: 10.0.1.0/24 (256 IPs)
+Tag – Key: Name | Value: my-subnet-private-1
+
+Click Create subnet
+Verify subnets created:
+
+my-subnet-public-1 → subnet-09d7307a173695307 | CIDR: 10.0.0.0/24
+my-subnet-private-1 → subnet-0f7c91a7779eae4ba | CIDR: 10.0.1.0/24
+
+
+STEP 5: Create Route Tables
+Go to: VPC > Route Tables
+5.1 Create Public Route Table
+
+Name: my-rt-public
+VPC: vpc-03bab4c2f21f169b4 (my-vpc-prac)
+Tag – Key: Name | Value: my-rt-public
+
+Click Create route table
+5.2 Associate Public Subnet
+
+Select my-rt-public > Actions > Edit subnet associations
+Check: my-subnet-public-1 (subnet-09d7307a173695307)
+Click Save associations
+
+5.3 Create Private Route Table
+
+Name: my-rt-private
+VPC: vpc-03bab4c2f21f169b4 (my-vpc-prac)
+Tag – Key: Name | Value: my-rt-private
+
+Click Create route table
+5.4 Associate Private Subnet
+
+Select my-rt-private > Actions > Edit subnet associations
+Check: my-subnet-private-1 (subnet-0f7c91a7779eae4ba)
+Click Save associations
+
+
+STEP 6: Create and Attach Internet Gateway
+Go to: VPC > Internet Gateways > Create internet gateway
+
+Name tag: my-internet-gtw
+Tag – Key: Name | Value: my-internet-gtw
+
+Click Create internet gateway
+
+Success: "igw-0edabc91335e785ae – my-internet-gtw was created"
+
+Attach to VPC:
+
+Click Attach to a VPC
+Select: vpc-03bab4c2f21f169b4 (my-vpc-prac)
+Click Attach internet gateway
+
+
+Success: "Internet gateway igw-0edabc91335e785ae successfully attached to vpc-03bab4c2f21f169b4"
+
+
+STEP 7: Add Internet Gateway Route to Public Route Table
+
+Go to Route Tables > select my-rt-public
+Actions > Edit routes
+Add route:
+
+Destination: 0.0.0.0/0
+Target: Internet Gateway → igw-0edabc91335e785ae
+
+
+Click Save changes
+
+
+STEP 8: Create NAT Gateway
+Go to: VPC > NAT Gateways > Create NAT gateway
+
+Name: my-nat-gateway
+Availability mode: Regional – new
+VPC: vpc-03bab4c2f21f169b4 (my-vpc-prac)
+Connectivity type: Public
+Elastic IP allocation: Automatic
+Tag – Key: Name | Value: my-nat-gateway
+
+Click Create NAT gateway
+Add NAT Gateway Route to Private Route Table:
+
+Go to Route Tables > select my-rt-private
+Actions > Edit routes
+Add route:
+
+Destination: 0.0.0.0/0
+Target: NAT Gateway → nat-14d47e8c0ab5e0bc1
+
+
+Click Save changes
+
+
+STEP 9: Create Security Groups
+Go to: VPC > Security Groups > Create security group
+9.1 Public Security Group
+
+Security group name: public-sg
+Description: Allow SSH access to developer
+VPC: vpc-03bab4c2f21f169b4 (my-vpc-prac)
+Inbound rule: All traffic | All | All | Source: 0.0.0.0/0
+Outbound rule: All traffic | All | All | Destination: 0.0.0.0/0
+
+Click Create security group
+9.2 Private Security Group
+
+Security group name: private-sg
+Description: Allow SSH
+VPC: vpc-03bab4c2f21f169b4 (my-vpc-prac)
+Inbound rule: All traffic | All | All | Source: 0.0.0.0/0
+Outbound rule: All traffic | All | All | Destination: 0.0.0.0/0
+
+Click Create security group
+
+STEP 10: Create EC2 Key Pair
+Go to: EC2 > Key Pairs > Create key pair
+
+Name: vpc-kp
+Key pair type: RSA
+Private key file format: .pem (for OpenSSH)
+
+Click Create key pair (saves .pem file — keep it safe)
+
+STEP 11: Create IAM Role for S3 Full Access
+Go to: IAM > Roles > Create role
+11.1 Select Trusted Entity
+
+Trusted entity type: AWS service
+Use case: S3
+Use case option: S3 (Allows S3 to call AWS services on your behalf)
+
+Click Next
+11.2 Add Permissions
+
+Search: s3
+Select: AmazonS3FullAccess
+Also select: AccountManagementFromVercel, AdministratorAccess-Amplify, AdministratorAccess-AWSElasticBeanstalk
+
+Click Next
+11.3 Name and Create
+
+Role name: S3_full_access
+Description: Allows S3 to call AWS services on your behalf
+
+Click Create role
+
+STEP 12: Launch Public EC2 Instance
+Go to: EC2 > Instances > Launch Instances
+
+Name: ubuntu-public
+AMI: Ubuntu Server 22.04 LTS (HVM), SSD Volume Type
+AMI ID: ami-087d1c9a513324697
+Architecture: 64-bit (x86)
+
+Edit Network Settings:
+
+VPC: vpc-03bab4c2f21f169b4 (my-vpc-prac)
+Subnet: subnet-09d7307a173695307 / my-subnet-public-1
+Availability Zone: ap-south-1a
+Auto-assign public IP: Disable
+Firewall: Select existing security group
+Security group: public-sg
+
+Storage:
+
+1x 8 GiB | gp3 | Root volume | 3000 IOPS | Not encrypted
+
+Click Launch Instance
+
+STEP 13: Launch Private EC2 Instance
+Go to: EC2 > Instances > Launch Instances
+
+Name: ubuntu-private
+AMI: Ubuntu Server 22.04 LTS (HVM), SSD Volume Type
+AMI ID: ami-087d1c9a513324697
+Key pair: vpc-kp
+
+Network Settings:
+
+VPC: vpc-03bab4c2f21f169b4 (my-vpc-prac)
+Subnet: subnet-09d7307a173695307 / my-subnet-public-1
+Auto-assign public IP: Disable
+Firewall: Select existing security group
+Security group: private-sg
+
+Summary:
+
+Instances: 1
+Instance type: t3.micro
+Storage: 1 volume – 8 GiB
+
+Click Launch Instance
+

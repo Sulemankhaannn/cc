@@ -1,0 +1,127 @@
+START
+  ↓
+Open Web Browser
+Search "Amazon Corretto JDK download"
+Open official website and download
+Windows x64 (.msi installer) file
+  ↓
+Install Java Corretto
+Open downloaded MSI file
+Click Next → Install → Finish
+Java gets installed on system
+  ↓
+Check Environment Variables
+Right Click "This PC"
+→ Properties
+→ Advanced System Settings
+→ Environment Variables
+Verify Java path in System PATH
+If not present add:
+C:\Program Files\Amazon Corretto\jdk\bin
+Click OK
+  ↓
+Download Jenkins
+Open browser
+Search "Jenkins download"
+Open official Jenkins website
+Download Jenkins WAR file
+  ↓
+Verify Java Installation
+Open Command Prompt
+Type command:
+java -version
+Then type:
+javac
+If version appears Java installed correctly
+  ↓
+Move Jenkins File
+Move downloaded jenkins.war
+to D drive
+Open CMD in D drive
+  ↓
+Run Jenkins Server
+Execute command:
+java -jar jenkins.war
+Jenkins server starts running
+Do NOT close CMD window
+  ↓
+Get Initial Admin Password
+CMD shows file path for password
+Example:
+C:\Users\username\.jenkins\secrets\
+initialAdminPassword
+Open file in Notepad
+Copy the password
+  ↓
+Unlock Jenkins
+Open browser
+Enter URL:
+http://localhost:8080
+Paste copied admin password
+Click Continue
+  ↓
+Install Plugins
+Select option:
+Install Suggested Plugins
+Jenkins automatically installs required plugins
+Wait until installation completes
+  ↓
+Create First Admin User
+Fill details:
+Username
+Password
+Confirm Password
+Full Name
+Email Address
+Click Save and Continue
+  ↓
+Instance Configuration
+Verify Jenkins URL
+http://localhost:8080
+Click Save and Finish
+  ↓
+Start Jenkins
+Click "Start Using Jenkins"
+Jenkins Dashboard opens
+  ↓
+Create New Project
+Click "New Item"
+Enter project name
+Select "Freestyle Project"
+Click OK
+Project is created
+  ↓
+Create Jenkins Users
+Go to Manage Jenkins
+→ Security
+→ Users
+Click "Create User"
+Create two users
+Example:
+User1: jiya
+User2: shruti
+Enter username, password,
+full name and email
+Click Create User
+  ↓
+Configure User Authorization
+Go to Manage Jenkins
+→ Security
+Under Authorization select
+"Matrix-based Security"
+Click Add User
+Add created users
+  ↓
+Assign Permissions
+Give permissions to users
+Example:
+User1 – full access
+User2 – read only access
+Save settings
+  ↓
+Test User Login
+Sign out from admin account
+Login with created users
+Verify permissions and access
+  ↓
+END

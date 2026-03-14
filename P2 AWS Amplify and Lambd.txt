@@ -1,0 +1,295 @@
+PRACTICAL 2 – AWS Amplify and Lambda Function
+Aim
+To demonstrate the use of AWS Amplify for hosting a web page and AWS Lambda for running serverless functions.
+
+PART 1 – Deploy Web Page using AWS Amplify
+Step 1 – Create index.html in VS Code
+Create a new file called index.html and write basic web page code:
+html<!DOCTYPE html>
+<html>
+<head>
+    <title>My Web Page</title>
+</head>
+<body>
+    <h1>Hello, World!</h1>
+    <p>This is a basic web page.</p>
+</body>
+</html>
+```
+Save the file, then make a **ZIP file** of it.
+
+---
+
+## Step 2 – Open AWS Amplify
+
+Go to:
+```
+AWS Console → Search: AWS Amplify → Select AWS Amplify
+```
+Click **Create new app**
+
+---
+
+## Step 3 – Deploy Without Git
+
+On the "Start building with Amplify" page:
+```
+Select: Deploy without Git
+```
+Click **Next**
+
+---
+
+## Step 4 – Start a Manual Deployment
+```
+App name: app6765
+Branch name: staging
+Method: Drag and drop
+```
+Drag and drop your **index.zip** file into the upload area.
+
+> File uploaded: index.zip ✓
+
+Click **Save and deploy**
+
+---
+
+## Step 5 – Access the Deployed Web Page
+
+After deployment, a link will be generated. Copy it and paste in a new tab:
+```
+https://staging.d1c6za0x9r0x2.amplifyapp.com
+```
+
+> Output: Page shows "Hello, World! — This is a basic web page."
+
+---
+
+# PART 2 – Create Lambda Function (Area Calculator)
+
+## Step 6 – Open AWS Lambda
+
+Go back to AWS Console home page:
+```
+AWS Console → Search: Lambda → Select Lambda
+```
+
+---
+
+## Step 7 – Create a New Function
+
+Click **Create a function**
+```
+Select: Author from scratch (1st option)
+Function name: python
+Runtime: Python 3.14
+Architecture: x86_64
+Click Create function
+
+Success: "Successfully created the function python."
+
+
+Step 8 – Write the Lambda Code
+Scroll down to the code editor. Write the following code in lambda_function.py:
+pythonimport json
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+def lambda_handler(event, context):
+    # TODO implement
+    length = event['length']
+    width = event['width']
+    area = calculateArea(length, width)
+    print(f"Area: {area}")
+    logger.info(f"cloudwatch logs group: {context.log_group_name}")
+    data = {
+        "area": area
+    }
+    return json.dumps(data)
+
+def calculateArea(length, width):
+    return length * width
+```
+
+Click **Deploy** (left side / top of editor)
+
+---
+
+## Step 9 – Create a Test Event
+
+Click **Test** tab then create a new test event:
+```
+Event Name: areaEvent
+Invocation type: Synchronous
+Event sharing settings: Private
+Template: Hello World
+Write the following in Event JSON:
+json{
+    "length": 23,
+    "width": 45
+}
+```
+Click **Save** then click **Invoke**
+
+---
+
+## Step 10 – Output
+```
+Status: Succeeded
+Test Event Name: hello-world
+
+Response:
+"{\"area\": 1035}"
+
+Function Logs:
+Area: 1035
+[INFO] cloudwatch logs group: /aws/lambda/python
+Duration: 20.50 ms   Billed Duration: 156 ms
+Memory Size: 128 MB   Max Memory Used: 39 MB
+
+PART 3 – Deploy Calculator using AWS Amplify
+Step 11 – Create Calculator index.html in VS Code
+Create a new index.html file with the following code:
+html<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .calculator {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+        }
+        #display {
+            width: 100%;
+            height: 50px;
+            font-size: 24px;
+            text-align: right;
+            margin-bottom: 10px;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        button {
+            padding: 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        button:hover {
+            background-color: #ddd;
+        }
+        .equal-sign {
+            background-color: #ff9500;
+            color: white;
+            grid-column: span 4;
+        }
+        .clear-btn {
+            background-color: #ff4444;
+            color: white;
+        }
+        .clear-btn:hover {
+            background-color: #cc0000;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" id="display" readonly>
+        <div class="buttons">
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button onclick="appendNumber('/')"> / </button>
+
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button onclick="appendNumber('*')">*</button>
+
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button onclick="appendNumber('-')">-</button>
+
+            <button onclick="clearDisplay()" class="clear-btn">C</button>
+            <button onclick="appendNumber('0')">0</button>
+            <button onclick="appendNumber('.')">.</button>
+            <button onclick="appendNumber('+')">+</button>
+
+            <button onclick="calculate()" class="equal-sign">=</button>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById('display');
+
+        function appendNumber(input) {
+            display.value += input;
+        }
+
+        function calculate() {
+            try {
+                display.value = eval(display.value);
+            } catch (error) {
+                display.value = "Error";
+            }
+        }
+
+        function clearDisplay() {
+            display.value = "";
+        }
+    </script>
+</body>
+</html>
+```
+
+Save the file and make a **ZIP file** called `calculator.zip`
+
+---
+
+## Step 12 – Deploy Calculator on Amplify
+
+Go to:
+```
+AWS Console → AWS Amplify → Create new app → Deploy without Git
+```
+```
+App name: app955
+Branch name: staging
+Method: Drag and drop
+```
+Upload **calculator.zip**
+
+Click **Save and deploy**
+
+Copy the generated link and paste in a new tab:
+```
+https://staging.d3p6e6bdomqc30.amplifyapp.com
+```
+
+> Output: Calculator app is live and working in the browser.
+
+---
+
+## Step 13 – Delete the App (Cleanup)
+```
+Amplify → Select App → App settings → Delete app
+
+Note: For the calculator, only Amplify deployment was done. Lambda was NOT used for the calculator.

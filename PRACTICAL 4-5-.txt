@@ -1,0 +1,144 @@
+PRACTICAL 4-
+
+START
+  ↓
+Login to AWS Console
+Change Region → Asia Pacific (Mumbai)
+  ↓
+Search for VPC
+Open VPC Dashboard
+  ↓
+Create VPC
+Settings:
+Name: my-vpc-prac
+IPv4 CIDR: 10.0.0.0/16
+Tenancy: Default
+Click Create VPC
+  ↓
+Delete extra subnets except default ones
+  ↓
+Create Public Subnet
+VPC: my-vpc-prac
+Subnet name: public-subnet
+Availability Zone: ap-south-1a
+IPv4 CIDR: 10.0.1.0/24
+Click Create
+  ↓
+Create Private Subnet
+VPC: my-vpc-prac
+Subnet name: private-subnet
+Availability Zone: ap-south-1b
+IPv4 CIDR: 10.0.2.0/24
+Click Create
+  ↓
+Delete extra route tables except default
+  ↓
+Create Public Route Table
+Name: my-rt-public
+VPC: my-vpc-prac
+  ↓
+Create Private Route Table
+Name: my-rt-private
+VPC: my-vpc-prac
+  ↓
+Associate Public Subnet
+Route Table: my-rt-public
+Subnet: public-subnet
+Save association
+  ↓
+Associate Private Subnet
+Route Table: my-rt-private
+Subnet: private-subnet
+Save association
+  ↓
+Create Internet Gateway
+Name: my-igw
+Click Create
+  ↓
+Attach Internet Gateway
+Attach to VPC → my-vpc-prac
+  ↓
+Edit Routes of Public Route Table
+Add Route
+Destination: 0.0.0.0/0
+Target: Internet Gateway
+Save
+  ↓
+Create NAT Gateway
+Subnet: public-subnet
+Elastic IP: Allocate new
+Connectivity: Public
+Click Create
+  ↓
+Edit Routes of Private Route Table
+Add Route
+Destination: 0.0.0.0/0
+Target: NAT Gateway
+Save
+  ↓
+Create Public Security Group
+Name: public-sg
+Inbound Rules:
+SSH
+Port: 22
+Source: My IP
+Save
+  ↓
+Create Private Security Group
+Name: private-sg
+Inbound Rules:
+SSH
+Port: 22
+Source: Public Subnet / Public Instance IP
+Save
+  ↓
+Create Key Pair
+EC2 → Key Pairs → Create Key Pair
+Name: prac-key
+Type: RSA
+Format: .pem
+Download key
+  ↓
+Create IAM Role
+IAM → Roles → Create Role
+Trusted entity: EC2
+Permissions: AmazonSSMManagedInstanceCore
+Create Role
+  ↓
+Launch Public EC2 Instance
+Name: public-instance
+AMI: Ubuntu / Amazon Linux
+Instance type: t2.micro
+VPC: my-vpc-prac
+Subnet: public-subnet
+Auto assign Public IP: Enable
+Security group: public-sg
+Key pair: prac-key
+Launch
+  ↓
+Launch Private EC2 Instance
+Name: private-instance
+AMI: Ubuntu / Amazon Linux
+Instance type: t2.micro
+VPC: my-vpc-prac
+Subnet: private-subnet
+Auto assign Public IP: Disable
+Security group: private-sg
+Key pair: same key
+Launch
+  ↓
+Add SSH Rule in Public Security Group
+Allow SSH from local computer
+  ↓
+Add SSH Rule in Private Security Group
+Allow SSH from public instance IP
+  ↓
+SSH into Public Instance
+Command example:
+ssh -i key.pem ubuntu@public-ip
+  ↓
+SSH into Private Instance from Public Instance
+Command example:
+ssh -i key.pem ubuntu@private-ip
+  ↓
+END

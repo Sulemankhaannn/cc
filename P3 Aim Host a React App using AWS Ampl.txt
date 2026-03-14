@@ -1,0 +1,203 @@
+Aim: Host a React App using AWS Amplify + GitHub
+
+Step 1: Install Node.js
+
+Go to nodejs.org → Download LTS version → Install it
+Verify in terminal:
+
+node -v
+npm -v
+
+Step 2: Create React App
+
+Open VS Code → Terminal → New Terminal
+Run one by one:
+
+npx create-react-app my-react-app
+cd my-react-app
+npm start
+
+Browser opens at localhost:3000 
+
+
+Step 3: Edit App.js
+
+In VS Code left panel → src → App.js
+Press Ctrl + A → Delete all code
+code:
+import React, { useState } from "react";
+
+function App() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (email && password) {
+      setLoggedIn(true);
+    }
+  };
+
+  const handleLogout = () => {
+    setLoggedIn(false);
+    setEmail("");
+    setPassword("");
+  };
+
+  return (
+    <div style={styles.container}>
+      {!loggedIn ? (
+        <div style={styles.card}>
+          <h2>Login</h2>
+
+          <form onSubmit={handleLogin}>
+            <input
+              type="email"
+              placeholder="abc@gmail.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={styles.input}
+              required
+            />
+
+            <input
+              type="password"
+              placeholder="****"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={styles.input}
+              required
+            />
+
+            <button type="submit" style={styles.loginBtn}>
+              Login
+            </button>
+          </form>
+        </div>
+      ) : (
+        <div style={styles.home}>
+          <h2>Welcome Home 🎉</h2>
+          <p>You are logged in as:</p>
+          <b>{email}</b>
+          <br /><br />
+          <button onClick={handleLogout} style={styles.logoutBtn}>
+            Logout
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const styles = {
+  container: {
+    height: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    background: "#e5edf5",
+  },
+
+  card: {
+    background: "white",
+    padding: "30px",
+    borderRadius: "8px",
+    width: "300px",
+    textAlign: "center",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+  },
+
+  input: {
+    width: "100%",
+    padding: "10px",
+    margin: "10px 0",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+  },
+
+  loginBtn: {
+    width: "100%",
+    padding: "10px",
+    background: "#1e73e8",
+    color: "white",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+  },
+
+  home: {
+    textAlign: "center",
+  },
+
+  logoutBtn: {
+    padding: "8px 15px",
+    background: "red",
+    color: "white",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+  },
+};
+
+export default App;
+
+
+Paste the code → Ctrl + S to save 
+
+
+Step 4: Create GitHub Repository
+
+Go to github.com → Login
+Click "+" → New Repository
+Name it (e.g. reactapp) → Click Create Repository
+Copy the repo URL
+
+
+Step 5: Push Code to GitHub
+Run in terminal one by one:
+git config --global user.email "youremail@gmail.com"
+git config --global user.name "YourName"
+git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin <your repo URL>
+git push -u origin main
+Authorize GitHub if popup appears 
+
+Step 6: Host on AWS Amplify
+
+Go to aws.amazon.com → Search Amplify
+Click Deploy your app
+Select GitHub → Next
+Authorize GitHub → Select your repository → Select main branch
+Click Next → Next → Save and Deploy
+Wait 2-3 minutes 
+Get your live URL 
+
+
+INCASE deployment fails — Fix YAML:
+
+Go to Amplify → your app → Hosting → Build settings
+Replace the entire YAML with this:
+
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm install
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: build
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - .npm/**/*
+
+Click Save
+Go to Overview → Click main branch → Click Redeploy
